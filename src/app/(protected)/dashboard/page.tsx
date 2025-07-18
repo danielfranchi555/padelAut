@@ -50,10 +50,10 @@ import type { Player, Match } from "../../../types/types";
 import { mockAvailability, mockMatches, mockPlayers } from "@/lib/mockData";
 import Link from "next/link";
 
-interface AdminDashboardProps {
-  players: Player[];
-  matches: Match[];
-}
+// interface AdminDashboardProps {
+//   players: Player[];
+//   matches: Match[];
+// }
 
 export default function AdminDashboard() {
   //   players: initialPlayers,
