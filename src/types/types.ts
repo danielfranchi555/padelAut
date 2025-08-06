@@ -1,10 +1,20 @@
+import {
+  Match,
+  MatchPlayer,
+  PlayerProfile,
+  Prisma,
+  User,
+} from "@prisma/client";
+
 export interface Player {
   id: string;
-  email: string;
   name: string;
-  phone?: string;
-  skill_level: number;
-  is_admin: boolean;
+  email: string;
+  email_verified?: string;
+  image?: string;
+  role: "admin" | "user";
+  number: string;
+  level: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -20,12 +30,12 @@ export interface Availability {
   created_at: string;
 }
 
-export interface Match {
+export interface MatchUi {
   id: string;
   date: string;
   time: string;
   court_number: number;
-  status: "scheduled" | "confirmed" | "cancelled" | "completed";
+  status: "scheduledAt" | "confirmed" | "cancelled" | "completed";
   created_by: string;
   created_at: string;
   updated_at: string;
@@ -41,3 +51,37 @@ export interface MatchParticipant {
   created_at: string;
   player?: Player;
 }
+
+export type MatchPlayerWithMatch = MatchPlayer & {
+  match: Pick<Match, "scheduledAt" | "durationMinutes" | "status"> | null;
+};
+
+export type PlayerProfileWithMatchPlayers = PlayerProfile & {
+  matchPlayers: MatchPlayerWithMatch[];
+};
+
+export type UserWithAllDetails = Prisma.UserGetPayload<{
+  include: {
+    playerProfile: {
+      include: {
+        matchPlayers: {
+          include: {
+            match: {
+              select: {
+                scheduledAt: true;
+                durationMinutes: true;
+                status: true;
+              };
+            };
+          };
+        };
+      };
+    };
+    availabilities: true;
+  };
+}>;
+
+export type PlayerWithProfileAndAvailability = User & {
+  playerProfile: PlayerProfile | null;
+  availabilities: Availability[];
+};

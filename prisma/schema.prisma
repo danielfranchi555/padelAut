@@ -45,10 +45,125 @@ model User {
   password      String?
   emailVerified DateTime? @map("email_verified")
   image         String?
-  accounts      Account[]
+  number        String?
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @default(now()) @updatedAt
   role          Role      @default(user)
 
+  accounts       Account[]
+  availabilities Availability[]
+  // matchPlayers   MatchPlayer[]
+  notifications  NotificationLog[]
+
+  playerProfile PlayerProfile? // Relación 1 a 1 opcional con perfil jugador
+
   @@map("users")
+}
+
+enum CourtSide {
+  drive
+  backhand
+}
+
+enum Gender {
+  male
+  female
+}
+
+model PlayerProfile {
+  id           String        @id @default(cuid())
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @unique
+  category     Float?
+  side         CourtSide? // <-- Nuevo campo agregado
+  gender       Gender?
+  ranking      Int? // Ejemplo de dato extra de jugador
+  wins         Int? // Partidos ganados
+  losses       Int? // Partidos perdidos
+  matchPlayers MatchPlayer[]
+
+  // otros campos específicos de jugador...
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Court {
+  id             String              @id @default(uuid())
+  name           String
+  location       String?
+  availabilities CourtAvailability[]
+  matches        Match[]
+  createdAt      DateTime            @default(now())
+}
+
+model CourtAvailability {
+  id        String @id @default(uuid())
+  court     Court  @relation(fields: [courtId], references: [id])
+  courtId   String
+  dayOfWeek String // ej: "tuesday"
+  from      String
+  to        String
+}
+
+model Match {
+  id              String            @id @default(uuid())
+  court           Court             @relation(fields: [courtId], references: [id])
+  courtId         String
+  scheduledAt     DateTime
+  durationMinutes Int
+  resultA         Int? // puntos equipo A
+  resultB         Int? // puntos equipo B
+  players         MatchPlayer[]
+  createdAt       DateTime          @default(now())
+  NotificationLog NotificationLog[]
+  status          MatchStatus       @default(pending)
+}
+
+enum MatchStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+model MatchPlayer {
+  id                String        @id @default(uuid())
+  match             Match         @relation(fields: [matchId], references: [id])
+  matchId           String
+  player            PlayerProfile @relation(fields: [playerId], references: [id])
+  playerId          String
+  confirmed         Boolean       @default(false)
+  confirmationToken String
+  confirmedAt       DateTime? // <-- Nuevo campo
+  team              Int? // o enum si quieres
+}
+
+model NotificationLog {
+  id              String        @id @default(uuid())
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+  match           Match?        @relation(fields: [matchId], references: [id])
+  matchId         String?
+  channel         ContactMethod
+  status          String // "sent", "failed"
+  sentAt          DateTime
+  responseMessage String?
+}
+
+enum ContactMethod {
+  whatsapp
+  sms
+  email
+}
+
+model Availability {
+  id        String @id @default(uuid())
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
+  dayOfWeek String // ej: "monday"
+  from      String // "HH:mm"
+  to        String
 }
 
 model VerificationToken {

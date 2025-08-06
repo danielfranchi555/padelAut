@@ -27,8 +27,6 @@ export async function handleSubmitLogin(
 
   const { email, password } = result.data;
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   try {
     await signIn("credentials", {
       email,

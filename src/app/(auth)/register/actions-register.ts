@@ -14,7 +14,6 @@ export async function handleSubmitRegister(
   const formValues = Object.fromEntries(formData) as Record<string, string>;
 
   const result = registerSchema.safeParse(formValues);
-  console.log({ result });
 
   // 🧪 Si hay errores de validación
   if (!result.success) {
