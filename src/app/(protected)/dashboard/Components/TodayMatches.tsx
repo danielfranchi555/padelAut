@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Match } from "@/types/types";
+import { MatchUi } from "@/types/types";
 import { Calendar } from "lucide-react";
 import React from "react";
 
 interface TodayMatchesProps {
-  todayMatches: Match[];
-  matches: Match[];
+  todayMatches: MatchUi[];
+  matches: MatchUi[];
 }
 
 export const TodayMatches = ({ matches, todayMatches }: TodayMatchesProps) => {
