@@ -33,6 +33,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DetailMatch from "./DetailMatch/DetailMatch";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export const TabMatches = async () => {
   const matches = (await getMatches()) as MatchWithPlayers[];
@@ -65,15 +67,8 @@ export const TabMatches = async () => {
 
   const formatDateTime = (date: Date) => {
     return {
-      date: date.toLocaleDateString("es-ES", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-      }),
-      time: date.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      date: format(date, "eee, d MMM", { locale: es }), // ej: "lun, 12 ago"
+      time: format(date, "HH:mm", { locale: es }), // ej: "20:30"
     };
   };
 
@@ -105,6 +100,8 @@ export const TabMatches = async () => {
     }
     return players.slice(2, 4);
   };
+
+  console.log({ matches });
 
   return (
     <TabsContent value="matches">

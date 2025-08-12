@@ -30,6 +30,7 @@ export async function getPlayers() {
     const players = await prisma.user.findMany({
       include: {
         playerProfile: true,
+        availabilities: true,
       },
     });
 

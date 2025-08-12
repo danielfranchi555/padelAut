@@ -18,6 +18,21 @@ import {
 import { TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { getPlayers } from "@/app/(protected)/dashboard/actions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const dayNamesMap: Record<string, string> = {
+  monday: "Lun",
+  tuesday: "Mar",
+  wednesday: "Mié",
+  thursday: "Jue",
+  friday: "Vie",
+  saturday: "Sáb",
+  sunday: "Dom",
+};
 
 export const TabPlayers = async () => {
   const players = await getPlayers();
@@ -25,30 +40,6 @@ export const TabPlayers = async () => {
   if (!players) {
     return <span>Error al obtener los jugadores</span>;
   }
-
-  // const [players, setPlayers] = useState<PlayerProfile[]>([]);
-  // const [isCreatingPlayer, setIsCreatingPlayer] = useState(false);
-
-  // const [editingPlayer, setEditingPlayer] = useState<PlayerProfile | null>(
-  //   null
-  // );
-
-  // const handleCreatePlayer = (formData: FormData) => {
-  //   const newPlayer: PlayerProfile = {
-  //     id: `player-${Date.now()}`,
-  //     level: 9,
-  //     losses: 0,
-  //     ranking: 0,
-  //     userId: "user-1",
-  //     wins: 0,
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   };
-
-  //   setPlayers([...players, newPlayer]);
-  //   setIsCreatingPlayer(false);
-  //   alert("Jugador creado correctamente");
-  // };
 
   return (
     <TabsContent value="players">
@@ -125,7 +116,7 @@ export const TabPlayers = async () => {
                 <TableHead>Teléfono</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Acciones</TableHead>
+                <TableHead>Availabilitie</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -143,6 +134,47 @@ export const TabPlayers = async () => {
                     </Badge>
                   </TableCell>
                   <TableCell>{player.playerProfile?.category}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {player.availabilities
+                        ?.sort((a, b) => {
+                          const daysOrder = [
+                            "monday",
+                            "tuesday",
+                            "wednesday",
+                            "thursday",
+                            "friday",
+                            "saturday",
+                            "sunday",
+                          ];
+                          return (
+                            daysOrder.indexOf(a.dayOfWeek.toLowerCase()) -
+                            daysOrder.indexOf(b.dayOfWeek.toLowerCase())
+                          );
+                        })
+                        .map((item) => (
+                          <Tooltip key={item.id}>
+                            <TooltipTrigger asChild>
+                              <Badge
+                                variant="outline"
+                                className="cursor-pointer"
+                              >
+                                {dayNamesMap[item.dayOfWeek.toLowerCase()] ||
+                                  item.dayOfWeek.substring(0, 3)}{" "}
+                                {item.from}-{item.to}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>
+                                {item.dayOfWeek.charAt(0).toUpperCase() +
+                                  item.dayOfWeek.slice(1)}
+                                : {item.from} - {item.to}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                    </div>
+                  </TableCell>
 
                   <TableCell>
                     {/* <Button

@@ -81,6 +81,18 @@ export type UserWithAllDetails = Prisma.UserGetPayload<{
   };
 }>;
 
+export type MatchWithAvailabilities = Prisma.CourtGetPayload<{
+  include: {
+    availabilities: true;
+  };
+}>;
+
+export type MatchWithPlayers = Prisma.MatchGetPayload<{
+  include: {
+    players: true;
+  };
+}>;
+
 export type PlayerWithProfileAndAvailability = User & {
   playerProfile: PlayerProfile | null;
   availabilities: Availability[];

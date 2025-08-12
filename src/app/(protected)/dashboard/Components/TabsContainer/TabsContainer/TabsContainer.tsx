@@ -11,7 +11,7 @@ export const TabsContainer = () => {
       <TabsList>
         <TabsTrigger value="matches">Partidos</TabsTrigger>
         <TabsTrigger value="players">Jugadores</TabsTrigger>
-        <TabsTrigger value="create-matches">Crear Partidos asd</TabsTrigger>
+        <TabsTrigger value="create-matches">Crear Partidos </TabsTrigger>
       </TabsList>
       <TabMatches />
       <TabPlayers />

@@ -144,10 +144,10 @@ const DetailMatch = ({
                           {matchPlayer.player.user.name}
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          {matchPlayer.player.level && (
+                          {matchPlayer.player.category && (
                             <span className="flex items-center gap-1">
                               <Target className="h-3 w-3" />
-                              Nivel {matchPlayer.player.level}
+                              Nivel {matchPlayer.player.category}
                             </span>
                           )}
                           {matchPlayer.player.ranking && (
@@ -195,10 +195,10 @@ const DetailMatch = ({
                           {matchPlayer.player.user.name}
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          {matchPlayer.player.level && (
+                          {matchPlayer.player.category && (
                             <span className="flex items-center gap-1">
                               <Target className="h-3 w-3" />
-                              Nivel {matchPlayer.player.level}
+                              Nivel {matchPlayer.player.category}
                             </span>
                           )}
                           {matchPlayer.player.ranking && (

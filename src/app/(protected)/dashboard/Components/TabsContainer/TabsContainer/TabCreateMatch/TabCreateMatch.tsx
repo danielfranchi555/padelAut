@@ -12,18 +12,22 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CalendarPlus } from "lucide-react";
+import { autoCreateMatches } from "@/actions";
 // import { autoCreateMatches } from "@/actions";
 
 export const TabCreateMatch = () => {
-  const [selectedDate, setSelectedDate] = useState(
+  const [startFromDate, setStartFromDate] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [matchDuration, setMatchDuration] = useState(90);
-  const [minStartTime, setMinStartTime] = useState("16:00");
-  const [playerLevelDifference, setPlayerLevelDifference] = useState(1);
-  const [minPlayersPerMatch, setMinPlayersPerMatch] = useState(4);
+  const [minStartTime, setMinStartTime] = useState("08:00");
+  const [playerCategoryDifference, setplayerCategoryDifference] = useState(1);
   const [creating, setCreating] = useState(false);
   const [resultMessage, setResultMessage] = useState<string | null>(null);
+
+  // const [minPlayersPerMatch, setMinPlayersPerMatch] = useState(4);
+  // const [creating, setCreating] = useState(false);
+  // const [resultMessage, setResultMessage] = useState<string | null>(null);
 
   // const handleCreateMatches = async () => {
   //   setCreating(true);
@@ -35,7 +39,7 @@ export const TabCreateMatch = () => {
   //       date: selectedDate,
   //       durationMinutes: matchDuration,
   //       minStartTime, // puedes usar para filtrar slots antes de esa hora
-  //       maxLevelDiff: playerLevelDifference,
+  //       maxLevelDiff: playerCategoryDifference,
   //       minPlayers: minPlayersPerMatch,
   //     });
 
@@ -46,6 +50,24 @@ export const TabCreateMatch = () => {
   //     setCreating(false);
   //   }
   // };
+
+  const handleCreateMatches = async () => {
+    setCreating(true);
+    setResultMessage(null);
+    try {
+      const result = await autoCreateMatches({
+        startFromdate: startFromDate,
+        maxCategoryDiff: playerCategoryDifference,
+        minStartTime: minStartTime,
+      });
+      setResultMessage(`Se crearon ${result.count} partidos.`);
+    } catch (err) {
+      console.log({ err });
+      setResultMessage("Ocurrió un error al crear los partidos.");
+    } finally {
+      setCreating(false);
+    }
+  };
 
   return (
     <TabsContent value="create-matches">
@@ -59,12 +81,12 @@ export const TabCreateMatch = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="match-date">Fecha del partido</Label>
+            <Label htmlFor="match-date">Generar a partir de</Label>
             <Input
               id="match-date"
               type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              value={startFromDate}
+              onChange={(e) => setStartFromDate(e.target.value)}
             />
           </div>
 
@@ -102,37 +124,24 @@ export const TabCreateMatch = () => {
               type="number"
               min={0}
               max={5}
-              value={playerLevelDifference}
+              value={playerCategoryDifference}
               onChange={(e) =>
-                setPlayerLevelDifference(parseInt(e.target.value, 10))
+                setplayerCategoryDifference(parseInt(e.target.value, 10))
               }
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="min-players">
-              Número mínimo de jugadores por partido
-            </Label>
-            <Input
-              id="min-players"
-              type="number"
-              min={2}
-              max={10}
-              value={minPlayersPerMatch}
-              onChange={(e) =>
-                setMinPlayersPerMatch(parseInt(e.target.value, 10))
-              }
-            />
-          </div>
-
-          <Button disabled={creating} className="w-full">
+          <Button
+            onClick={handleCreateMatches}
+            disabled={creating}
+            className="w-full"
+          >
             <CalendarPlus className="h-4 w-4 mr-2" />
-            {creating
-              ? "Creando partidos..."
-              : "Crear Partidos Automáticamente"}
+            {creating ? "Creando..." : "Crear Partidos Automáticamente"}
           </Button>
-
           {resultMessage && <p className="text-center mt-4">{resultMessage}</p>}
+
+          {/* {resultMessage && <p className="text-center mt-4">{resultMessage}</p>} */}
         </CardContent>
       </Card>
     </TabsContent>

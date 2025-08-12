@@ -1,5 +1,8 @@
+import { Badge } from "@/components/ui/badge";
+import { auth } from "../../../../auth";
 import { Header } from "./Components/Header";
 import { TabsContainer } from "./Components/TabsContainer/TabsContainer/TabsContainer";
+import { BadgeCheckIcon } from "lucide-react";
 
 // interface AdminDashboardProps {
 //   players: Player[];
@@ -7,28 +10,40 @@ import { TabsContainer } from "./Components/TabsContainer/TabsContainer/TabsCont
 // }
 
 export default async function AdminDashboard() {
-  //   players: initialPlayers,
-  //   matches: initialMatches,
+  const session = await auth();
 
-  // const [players, setPlayers] = useState(mockPlayers);
-  // const [matches, setMatches] = useState(mockMatches);
-  // const activePlayersCount = players.filter((p) => p.is_active).length;
+  if (!session) {
+    return <div>Not authenticated</div>;
+  }
 
-  // const todayMatches = matches.filter(
-  //   (m) => m.date === new Date().toISOString().split("T")[0]
-  // );
-
-  // const avgSkillLevel =
-  //   players.length > 0
-  //     ? (
-  //         players.reduce((sum, p) => sum + p.skill_level, 0) / players.length
-  //       ).toFixed(1)
-  //     : "0";
+  if (session.user?.role !== "admin") {
+    return <div>You are not Admin</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+
       <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <p>Session User:</p>
+            <Badge variant="outline" className="">
+              {session.user.name}
+            </Badge>{" "}
+          </div>
+          <div className="flex items-center gap-2">
+            <p>Session Role:</p>
+            <Badge
+              variant="secondary"
+              className="bg-blue-500 text-white dark:bg-blue-600"
+            >
+              <BadgeCheckIcon />
+              {session.user.role}
+            </Badge>
+          </div>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           {/* <ActivesPlayers
