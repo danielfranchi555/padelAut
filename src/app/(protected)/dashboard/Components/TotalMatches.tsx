@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Match } from "@/types/types";
+import { MatchUi } from "@/types/types";
 import { CalendarPlus } from "lucide-react";
 import React from "react";
 
 interface TotalMatchesProps {
-  matches: Match[];
+  matches: MatchUi[];
 }
 
 export const TotalMatches = ({ matches }: TotalMatchesProps) => {
