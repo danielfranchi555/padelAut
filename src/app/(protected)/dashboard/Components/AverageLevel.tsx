@@ -18,8 +18,8 @@ export const AverageLevel = ({ avgSkillLevel, players }: AverageLevelProps) => {
       <CardContent>
         <div className="text-2xl font-bold">{avgSkillLevel}</div>
         <p className="text-xs text-muted-foreground">
-          Rango: {Math.min(...players.map((p) => p.skill_level))} -{" "}
-          {Math.max(...players.map((p) => p.skill_level))}
+          Rango: {Math.min(...players.map((p) => p.category))} -{" "}
+          {Math.max(...players.map((p) => p.category))}
         </p>
       </CardContent>
     </Card>

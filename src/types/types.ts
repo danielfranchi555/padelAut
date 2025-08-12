@@ -16,6 +16,7 @@ export interface Player {
   number: string;
   level: number;
   is_active: boolean;
+  category: number;
   created_at: string;
   updated_at: string;
 }
